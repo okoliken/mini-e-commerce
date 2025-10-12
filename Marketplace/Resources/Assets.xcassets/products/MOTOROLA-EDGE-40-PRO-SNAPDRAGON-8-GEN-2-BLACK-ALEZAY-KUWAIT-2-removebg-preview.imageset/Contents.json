@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "MOTOROLA-EDGE-40-PRO-SNAPDRAGON-8-GEN-2-BLACK-ALEZAY-KUWAIT-2-removebg-preview.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
