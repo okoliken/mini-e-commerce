@@ -1,0 +1,28 @@
+# Xcode
+.DS_Store
+DerivedData/
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+!xcshareddata/
+!xcshareddata/xcschemes/
+*.xcworkspace/contents.xcworkspacedata
+# Swift Package Manager
+.swiftpm/
+# CocoaPods
+Pods/
+# Carthage
+Carthage/
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+# Code Injection (e.g., Injection for Xcode)
+iOSInjectionProject/
+# Environment files
+.env
+.env.*
