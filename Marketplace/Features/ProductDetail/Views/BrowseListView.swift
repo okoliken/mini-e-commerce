@@ -31,30 +31,9 @@ struct BrowseListView: View {
                     selectedPrice: $viewModel.selectedPrice,
                     availablePrices: viewModel.availablePrices
                 )
-                if viewModel.updatedSelectedFilterTags.count > 0 {
-                    HStack {
-                        Text("Filters:")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                        HStack(spacing: 8) {
-                            ForEach(viewModel.updatedSelectedFilterTags, id:\.self) { tag in
-                                HStack {
-                                    Text(tag)
-                                        .font(.caption)
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray)
-                                        .onTapGesture {
-                                            print("Clear Price range filter")
-                                        }
-                                }
-                                .font(.caption)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(Color(.card))
-                                .cornerRadius(10)
-                            }
-                        }
-                        Spacer()
+                if viewModel.selectedFilterTags.count > 0 {
+                    FilterTags(selectedFilterTags: viewModel.selectedFilterTags) { tag in
+                        viewModel.clearFilter(tag)
                     }
                 }
                 VStack {
@@ -65,8 +44,8 @@ struct BrowseListView: View {
                         options: SortOption.allCases
                     ) { sortOrder in
                         if let convertedEnumSortOrder = SortOption(rawValue: sortOrder) {
-                            withAnimation(.easeInOut(duration: 0.3)){
-                               viewModel.selectedSortOption = convertedEnumSortOrder
+                            withAnimation(.easeInOut(duration: 0.4)){
+                                viewModel.selectedSortOption = convertedEnumSortOrder
                             }
                         }
                     }

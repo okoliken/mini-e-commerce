@@ -10,13 +10,29 @@ import SwiftUI
 struct MenuSelector: View {
     let label: String
     let options: [String]
+    let selectedOption: String?
     let onSelect: (String) -> Void
+
     
     var body: some View {
         Menu {
             ForEach(options, id: \.self) { option in
-                Button(option) {
+//                Button(action: {onSelect(option)}) {
+//                    
+//                } label: {
+//                    Text("rrtr")
+//                }
+                Button {
                     onSelect(option)
+                } label: {
+                    HStack {
+                        Text(option)
+                            Spacer()
+                        if option.lowercased() == selectedOption?.lowercased() {
+                            Image(systemName: "checkmark")
+                        }
+                        
+                    }
                 }
             }
         } label: {

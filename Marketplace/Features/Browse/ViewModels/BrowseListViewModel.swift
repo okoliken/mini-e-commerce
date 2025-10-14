@@ -17,16 +17,40 @@ enum SortOption: String, CaseIterable {
 
 
 public class BrowseListViewModel: ObservableObject {
-    private var selectedFilterTags: [String] = []
+    @Published var selectedFilterTags: [String] = []
     @Published var products: [Product] = []
-    @Published var selectedBrand: String? = nil
-    @Published var selectedPrice: Double?
+    
+    @Published var selectedBrand: String? = nil {
+        didSet {
+            self.updateFilterTags()
+        }
+    }
+    @Published var selectedPrice: Double? {
+        didSet {
+            self.updateFilterTags()
+        }
+    }
     @Published var selectedSortOption: SortOption = .relevance
     
     
     init(products: [Product]) {
         self.products = products
     }
+    
+    private func updateFilterTags() {
+        var filterTags: [String] = []
+        
+        if let selectedBrand = self.selectedBrand, !selectedBrand.isEmpty {
+            filterTags.append("Brand")
+        }
+        
+        if let selectedPrice = self.selectedPrice, !selectedPrice.isNaN {
+            filterTags.append("Price Range")
+        }
+        
+        self.selectedFilterTags = filterTags
+    }
+    
     
     var productBrands: [String] {
         Array(Set(self.products.compactMap { $0.brand }))
@@ -74,26 +98,25 @@ public class BrowseListViewModel: ObservableObject {
     }
     
     
-    
-    
-    var updatedSelectedFilterTags: [String] {
-        if let selectedBrand = selectedBrand, !selectedBrand.isEmpty {
-            self.selectedFilterTags.append("Brand")
-        } else {
-            self.selectedFilterTags.removeAll { $0 == "Brand" }
-        }
-        
-        if let selectedPrice = selectedPrice, selectedPrice.isNaN == false {
-            self.selectedFilterTags.append("Price Range")
-        } else {
-            self.selectedFilterTags.removeAll { $0 == "Price Range" }
-        }
-        
-        return Array(Set(self.selectedFilterTags))
+    func resetFilters() {
+        self.selectedBrand = nil
+        self.selectedPrice = nil
+        self.selectedSortOption = .relevance
     }
     
     
-    
+    func clearFilter(_ tag: String) {
+        switch tag.lowercased() {
+        case "brand":
+            self.selectedBrand = nil
+        case "price":
+            self.selectedPrice = nil
+        default:
+            break
+        }
+        
+        self.selectedFilterTags.removeAll { $0.lowercased() == tag.lowercased() }
+    }
     
 }
 

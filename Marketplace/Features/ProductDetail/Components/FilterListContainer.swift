@@ -13,27 +13,25 @@ struct FilterListContainer: View {
     @Binding var selectedBrand: String?
     @Binding var selectedPrice: Double?
     var availablePrices: [Double]?
-//    var priceRange: [ClosedRange<Double>]?
+    //    var priceRange: [ClosedRange<Double>]?
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 
-                MenuSelector(label: "Brand", options: brands) { brand in
+                MenuSelector(label: "Brand", options: brands, selectedOption: selectedBrand) { brand in
                     withAnimation(.easeInOut(duration: 0.3)) {
                         selectedBrand = brand
                     }
                 }
-                
-                MenuSelector(label: "Category", options: ["Audio", "Gaming", "Smartphones"]) { selected in
+                MenuSelector(label: "Category", options: ["Audio", "Gaming", "Smartphones"], selectedOption: "") { selected in
                     print("Selected category: \(selected)")
                 }
                 
-
-                MenuSelector(label: "Offers", options: ["Under $100", "$100 – $500", "Above $500"]) { selected in
+                MenuSelector(label: "Offers", options: ["Under $100", "$100 – $500", "Above $500"], selectedOption: "") { selected in
                     print("Selected category: \(selected)")
                 }
-                MenuSelector(label: "Model", options: ["Under $100", "$100 – $500", "Above $500"]) { model in
+                MenuSelector(label: "Model", options: ["Under $100", "$100 – $500", "Above $500"], selectedOption: "") { model in
                     print("met this condition")
                 }
             }
