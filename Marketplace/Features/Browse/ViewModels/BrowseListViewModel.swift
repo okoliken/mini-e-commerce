@@ -30,6 +30,12 @@ public class BrowseListViewModel: ObservableObject {
             self.updateFilterTags()
         }
     }
+    @Published var selectedModel: String? {
+        didSet {
+            self.updateFilterTags()
+        }
+    }
+    
     @Published var selectedSortOption: SortOption = .relevance
     
     
@@ -48,6 +54,10 @@ public class BrowseListViewModel: ObservableObject {
             filterTags.append("Price Range")
         }
         
+        if let selectedModel = self.selectedModel, !selectedModel.isEmpty {
+            filterTags.append("Model")
+        }
+        
         self.selectedFilterTags = filterTags
     }
     
@@ -56,21 +66,43 @@ public class BrowseListViewModel: ObservableObject {
         Array(Set(self.products.compactMap { $0.brand }))
     }
     
-    var availablePrices: [Double] {
-        let prices = products.compactMap { $0.price }
-        return Array(Set(prices)).sorted()
+    var availablePrices: [String: Double] {
+        var priceList: [String: Double] = [:]
+        var seenPrice: Set<Double> = []
+        
+        
+        for (_, product) in products.enumerated() {
+            if !seenPrice.contains(product.price){
+                priceList["$\(product.price)"] = product.price
+                seenPrice.insert(product.price)
+            }
+            
+        }
+        
+        return priceList
+        
     }
+    
+    var availableModels: [String] {
+        let models = products.compactMap { $0.model }
+        return Array(Set(models)).sorted()
+    }
+    
     
     var filterableProducts: [Product] {
         self.products.filter { product in
             var matchesFilters = true
             
-            if let selectedBrand = selectedBrand, !selectedBrand.isEmpty {
+            if let selectedBrand = self.selectedBrand, !selectedBrand.isEmpty {
                 matchesFilters = matchesFilters && (product.brand ?? "").lowercased() == selectedBrand.lowercased()
             }
             
-            if let selectedPrice = selectedPrice {
+            if let selectedPrice = self.selectedPrice {
                 return product.price == selectedPrice
+            }
+            
+            if let selectedModel = self.selectedModel, !selectedModel.isEmpty {
+                matchesFilters = matchesFilters && (product.model ?? "").lowercased().contains(selectedModel.lowercased())
             }
             
             return matchesFilters
@@ -101,6 +133,7 @@ public class BrowseListViewModel: ObservableObject {
     func resetFilters() {
         self.selectedBrand = nil
         self.selectedPrice = nil
+        self.selectedModel = nil
         self.selectedSortOption = .relevance
     }
     
@@ -111,6 +144,8 @@ public class BrowseListViewModel: ObservableObject {
             self.selectedBrand = nil
         case "price":
             self.selectedPrice = nil
+        case "model":
+            self.selectedModel = nil
         default:
             break
         }

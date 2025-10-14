@@ -26,14 +26,18 @@ struct BrowseListView: View {
             VStack(alignment: .leading, spacing: 24) {
                 FilterListContainer(
                     brands: viewModel.productBrands,
+                    models: viewModel.availableModels,
+                    availablePrices: viewModel.availablePrices,
                     showingFilters: $showingFilters,
                     selectedBrand: $viewModel.selectedBrand,
                     selectedPrice: $viewModel.selectedPrice,
-                    availablePrices: viewModel.availablePrices
+                    selectedModel: $viewModel.selectedModel,
                 )
                 if viewModel.selectedFilterTags.count > 0 {
                     FilterTags(selectedFilterTags: viewModel.selectedFilterTags) { tag in
                         viewModel.clearFilter(tag)
+                    } clearAll: { 
+                        viewModel.resetFilters()
                     }
                 }
                 VStack {
@@ -60,6 +64,7 @@ struct BrowseListView: View {
             }
             .navigationToolbarModifier(title: category.name, backPath: {dismiss()})
             .padding(.horizontal, 20)
+            .scrollTargetBehavior(.paging)
         }
     }
 }

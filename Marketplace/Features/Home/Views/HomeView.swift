@@ -114,6 +114,7 @@ struct HomeView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(.horizontal, 20)
+            .scrollTargetBehavior(.paging)
         }
     }
 }
