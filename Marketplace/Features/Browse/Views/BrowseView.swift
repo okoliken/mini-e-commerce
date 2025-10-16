@@ -97,6 +97,3 @@ struct BrowseView: View {
     }
 }
 
-#Preview {
-    BrowseView()
-}

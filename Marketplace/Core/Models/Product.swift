@@ -17,6 +17,7 @@ struct Product: Decodable, Hashable, Identifiable {
     let imageName: String
     let model: String?
     let brand: String?
+    let year: Int
 }
 
 struct Category: Identifiable, Hashable {

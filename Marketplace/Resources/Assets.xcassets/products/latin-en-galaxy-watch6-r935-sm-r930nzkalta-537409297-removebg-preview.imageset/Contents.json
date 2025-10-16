@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "latin-en-galaxy-watch6-r935-sm-r930nzkalta-537409297-removebg-preview.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

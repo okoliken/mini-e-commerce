@@ -27,11 +27,11 @@ struct BrowseListView: View {
                 FilterListContainer(
                     brands: viewModel.productBrands,
                     models: viewModel.availableModels,
-                    availablePrices: viewModel.availablePrices,
                     showingFilters: $showingFilters,
                     selectedBrand: $viewModel.selectedBrand,
                     selectedPrice: $viewModel.selectedPrice,
                     selectedModel: $viewModel.selectedModel,
+                    selectedYear: $viewModel.selectedYear,
                 )
                 if viewModel.selectedFilterTags.count > 0 {
                     FilterTags(selectedFilterTags: viewModel.selectedFilterTags) { tag in
@@ -48,9 +48,7 @@ struct BrowseListView: View {
                         options: SortOption.allCases
                     ) { sortOrder in
                         if let convertedEnumSortOrder = SortOption(rawValue: sortOrder) {
-                            withAnimation(.easeInOut(duration: 0.4)){
-                                viewModel.selectedSortOption = convertedEnumSortOrder
-                            }
+                            viewModel.selectedSortOption = convertedEnumSortOrder
                         }
                     }
                     
@@ -60,6 +58,7 @@ struct BrowseListView: View {
                             GridItem(.flexible(), spacing: 12),
                             GridItem(.flexible(), spacing: 12)
                         ])
+                   
                 }
             }
             .navigationToolbarModifier(title: category.name, backPath: {dismiss()})

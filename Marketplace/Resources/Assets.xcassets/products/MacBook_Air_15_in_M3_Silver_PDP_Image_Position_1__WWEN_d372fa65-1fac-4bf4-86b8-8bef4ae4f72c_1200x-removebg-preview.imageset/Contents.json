@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "MacBook_Air_15_in_M3_Silver_PDP_Image_Position_1__WWEN_d372fa65-1fac-4bf4-86b8-8bef4ae4f72c_1200x-removebg-preview.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "Apple_Watch_Series_10_42mm_LTE_Silver_Aluminum_Sport_Loop_Blue_Cloud_PDP_Image_Position_1__WWEN_1200x-removebg-preview.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

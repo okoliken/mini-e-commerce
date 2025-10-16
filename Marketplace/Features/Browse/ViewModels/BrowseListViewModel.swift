@@ -15,6 +15,22 @@ enum SortOption: String, CaseIterable {
     case discountHighToLow = "Biggest Discount"
 }
 
+struct PriceRange {
+    let label: String
+    let min: Double
+    let max: Double
+}
+
+let priceRanges: [PriceRange] = [
+    .init(label: "$50 - $99", min: 50, max: 99),
+    .init(label: "$100 - $199", min: 100, max: 199),
+    .init(label: "$200 - $399", min: 200, max: 399),
+    .init(label: "$400 - $699", min: 400, max: 699),
+    .init(label: "$700 - $999", min: 700, max: 999),
+    .init(label: "$1000 - $1499", min: 1000, max: 1499),
+    .init(label: "$1500 - $1999", min: 1500, max: 1999)
+]
+
 
 public class BrowseListViewModel: ObservableObject {
     @Published var selectedFilterTags: [String] = []
@@ -25,11 +41,17 @@ public class BrowseListViewModel: ObservableObject {
             self.updateFilterTags()
         }
     }
-    @Published var selectedPrice: Double? {
+    @Published var selectedPrice: String? {
         didSet {
             self.updateFilterTags()
         }
     }
+    @Published var selectedYear: String? {
+        didSet {
+            self.updateFilterTags()
+        }
+    }
+
     @Published var selectedModel: String? {
         didSet {
             self.updateFilterTags()
@@ -37,7 +59,6 @@ public class BrowseListViewModel: ObservableObject {
     }
     
     @Published var selectedSortOption: SortOption = .relevance
-    
     
     init(products: [Product]) {
         self.products = products
@@ -50,12 +71,16 @@ public class BrowseListViewModel: ObservableObject {
             filterTags.append("Brand")
         }
         
-        if let selectedPrice = self.selectedPrice, !selectedPrice.isNaN {
-            filterTags.append("Price Range")
+        if let selectedPrice = self.selectedPrice, !selectedPrice.isEmpty {
+            filterTags.append("Price")
         }
         
         if let selectedModel = self.selectedModel, !selectedModel.isEmpty {
             filterTags.append("Model")
+        }
+        
+        if self.selectedYear != nil {
+            filterTags.append("Year")
         }
         
         self.selectedFilterTags = filterTags
@@ -66,22 +91,6 @@ public class BrowseListViewModel: ObservableObject {
         Array(Set(self.products.compactMap { $0.brand }))
     }
     
-    var availablePrices: [String: Double] {
-        var priceList: [String: Double] = [:]
-        var seenPrice: Set<Double> = []
-        
-        
-        for (_, product) in products.enumerated() {
-            if !seenPrice.contains(product.price){
-                priceList["$\(product.price)"] = product.price
-                seenPrice.insert(product.price)
-            }
-            
-        }
-        
-        return priceList
-        
-    }
     
     var availableModels: [String] {
         let models = products.compactMap { $0.model }
@@ -90,6 +99,7 @@ public class BrowseListViewModel: ObservableObject {
     
     
     var filterableProducts: [Product] {
+        
         self.products.filter { product in
             var matchesFilters = true
             
@@ -97,13 +107,18 @@ public class BrowseListViewModel: ObservableObject {
                 matchesFilters = matchesFilters && (product.brand ?? "").lowercased() == selectedBrand.lowercased()
             }
             
-            if let selectedPrice = self.selectedPrice {
-                return product.price == selectedPrice
+            if let selectedPrice = self.selectedPrice, let range = priceRanges.first(where: { $0.label == selectedPrice }) {
+                matchesFilters = matchesFilters && (product.price >= range.min && product.price <= range.max)
+            }
+            
+            if let selectedYear = self.selectedYear, !selectedYear.isEmpty {
+                matchesFilters = matchesFilters && (product.year == Int(selectedYear))
             }
             
             if let selectedModel = self.selectedModel, !selectedModel.isEmpty {
                 matchesFilters = matchesFilters && (product.model ?? "").lowercased().contains(selectedModel.lowercased())
             }
+            
             
             return matchesFilters
         }
@@ -134,6 +149,7 @@ public class BrowseListViewModel: ObservableObject {
         self.selectedBrand = nil
         self.selectedPrice = nil
         self.selectedModel = nil
+        self.selectedYear = nil
         self.selectedSortOption = .relevance
     }
     
@@ -146,6 +162,8 @@ public class BrowseListViewModel: ObservableObject {
             self.selectedPrice = nil
         case "model":
             self.selectedModel = nil
+        case "year":
+            self.selectedYear = nil
         default:
             break
         }

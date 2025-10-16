@@ -22,7 +22,8 @@ struct HomeView: View {
             description: "Fitness tracking, notifications, and health monitoring",
             imageName: "smartwatch",
             model: "Model: WH-1000XM4, Black",
-            brand: "Samsung"
+            brand: "Samsung",
+            year: 2022
         ),
         Product(
             id: "1",
@@ -33,7 +34,8 @@ struct HomeView: View {
             description: "Dynamic microphone, Speaker microphone",
             imageName: "rodemicrophone",
             model: "Model: WH-1000XM4, Black",
-            brand: "LG"
+            brand: "LG",
+            year: 2022
         ),
         Product(
             id: "3",
@@ -44,7 +46,8 @@ struct HomeView: View {
             description: "High-performance smartphone with advanced camera system",
             imageName: "headphones",
             model: "Model: WH-1000XM4, Black",
-            brand: "Sony"
+            brand: "Sony",
+            year: 2022
         )
     ]
     
