@@ -57,7 +57,7 @@ struct ProductDetailView: View {
                                 Text("\(model)")
                             }
                             
-                            Text("\(product.description)")
+                            Text("\(product.productDescription)")
                                 .font(.callout)
                                 .foregroundColor(.black)
                                 .opacity(0.4)

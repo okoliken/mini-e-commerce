@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject var store: ProductStore
-    @State private var selected: String = "All"
+    @State private var selected: String = "all"
     
     let dealsOfTheDay: [Product] = [
         Product(
@@ -19,7 +19,7 @@ struct HomeView: View {
             category: "Wearables",
             price: 249.99,
             oldPrice: 299.99,
-            description: "Fitness tracking, notifications, and health monitoring",
+            productDescription: "Fitness tracking, notifications, and health monitoring",
             imageName: "smartwatch",
             model: "Model: WH-1000XM4, Black",
             brand: "Samsung",
@@ -31,7 +31,7 @@ struct HomeView: View {
             category: "Microphones",
             price: 108.20,
             oldPrice: 199.99,
-            description: "Dynamic microphone, Speaker microphone",
+            productDescription: "Dynamic microphone, Speaker microphone",
             imageName: "rodemicrophone",
             model: "Model: WH-1000XM4, Black",
             brand: "LG",
@@ -43,7 +43,7 @@ struct HomeView: View {
             category: "Smartphones",
             price: 699.00,
             oldPrice: 799.00,
-            description: "High-performance smartphone with advanced camera system",
+            productDescription: "High-performance smartphone with advanced camera system",
             imageName: "headphones",
             model: "Model: WH-1000XM4, Black",
             brand: "Sony",

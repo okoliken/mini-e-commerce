@@ -46,7 +46,7 @@ struct CarouselCard: View {
                             .font(.callout)
                             .fontWeight(.medium)
                         
-                        Text(product.description)
+                        Text(product.productDescription)
                             .lineLimit(2)
                             .truncationMode(.tail)
                             .font(.system(size: 10))

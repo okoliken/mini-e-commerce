@@ -42,9 +42,11 @@ struct ContentView: View {
             }
             
             NavigationStack {
-                Text("Favorites")
-                
+                FavouriteView()
+                    .navigationTitle("Favourites")
+                    .navigationBarTitleDisplayMode(.inline)
             }
+            
             .tabItem {
                 Image("favourites_icon")
                 Text("Favourites")

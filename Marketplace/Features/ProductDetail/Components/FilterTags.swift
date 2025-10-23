@@ -11,6 +11,8 @@ struct FilterTags: View {
     let clearFilter: (String) -> Void
     let clearAll: () -> Void  // Added this closure for "Clear All" action
     
+    var name = ""
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
