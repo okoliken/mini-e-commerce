@@ -11,13 +11,15 @@ struct FavoriteButton: View {
     var width: CGFloat = 30
     var height: CGFloat = 30
     var iconSize: CGFloat = 16
+    let product: Product
+    let onFavorite: (Product) -> Void
     
-    @Binding var isFavorite: Bool
-    
+    let isFavorite: Bool
+
     var body: some View {
         Button {
             withAnimation {
-                self.isFavorite.toggle()
+                self.onFavorite(product)
             }
         } label: {
             ZStack {

@@ -10,19 +10,20 @@ import SwiftUI
 struct CarouselCard: View {
     let product: Product
     @State var isFavorite: Bool = false
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
-           
+            
             VStack {
                 HStack (alignment: .center, spacing: 8){
                     ZStack(alignment: .bottom){
                         Image(product.imageName)
                             .resizable()
                             .scaledToFill()
-                            
+                        
                             .frame(width: 120, height: 134)
                             .padding()
-                            
+                        
                     }
                     VStack(alignment: .leading, spacing: 6) {
                         Text(product.category)
@@ -61,8 +62,14 @@ struct CarouselCard: View {
             .background(Color(.card))
             .cornerRadius(20)
             
-            FavoriteButton(isFavorite: $isFavorite)
-                .padding(16)
+            FavoriteButton(
+                product: product,
+                onFavorite: { product in
+                    
+                },
+                isFavorite: false
+            )
+            .padding(16)
         }
     }
 }

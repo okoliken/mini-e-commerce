@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ItemCard: View {
-    let product: Product
+    let product: FavoriteProduct
+    let onDelete: (FavoriteProduct) -> Void
     
     var body: some View {
         HStack(spacing: 15) {
@@ -34,7 +35,7 @@ struct ItemCard: View {
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
                 
-                Text("\(product.model ?? "No Model")")
+                Text("\(product.model ?? "")")
                     .font(.caption)
                     .foregroundColor(.black)
                     .opacity(0.4)
@@ -55,8 +56,14 @@ struct ItemCard: View {
                 }
                 .frame(width: 40, height: 40)
                 
-                Image(systemName: "ellipsis")
-                    .rotationEffect(.degrees(90))
+                Menu {
+                    Button("Delete") {
+                        self.onDelete(product)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .rotationEffect(.degrees(90))
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

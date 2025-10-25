@@ -30,7 +30,18 @@ struct ProductDetailView: View {
                                         .frame(height: 315)
                                 }
                                 VStack(spacing: 8){
-                                    FavoriteButton(width: 40, height: 40, iconSize: 20, isFavorite: $isFavorite)
+                                    
+                                    FavoriteButton(
+                                        width: 40,
+                                        height: 40,
+                                        iconSize: 20,
+                                        product: product,
+                                        onFavorite: { product in
+                                            print(product)
+                                        },
+                                        isFavorite: false
+                                    )
+                                        
                                     AddToCart(width: 40, height: 40, iconSize: 20)
                                 }
                                 .padding(16)

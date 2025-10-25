@@ -31,7 +31,7 @@ let priceRanges: [PriceRange] = [
     .init(label: "$1500 - $1999", min: 1500, max: 1999)
 ]
 
-
+@MainActor
 public class BrowseListViewModel: ObservableObject {
     @Published var selectedFilterTags: [String] = []
     @Published var products: [Product] = []

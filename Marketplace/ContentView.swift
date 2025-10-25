@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 
 struct ContentView: View {
     let service = ProductStore()
     @EnvironmentObject var store: ProductStore
-    
-    
+    @Query(sort: [SortDescriptor(\FavoriteProduct.title, order: .reverse)],animation: .easeInOut) var wishListItems: [FavoriteProduct]
     
     var body: some View {
         TabView{
@@ -50,7 +50,7 @@ struct ContentView: View {
             .tabItem {
                 Image("favourites_icon")
                 Text("Favourites")
-            }
+            } .badge(wishListItems.count)
             
             
             NavigationStack {
@@ -79,7 +79,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    
     ContentView()
         .environmentObject(ProductStore())
 }

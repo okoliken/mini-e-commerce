@@ -11,7 +11,7 @@ struct CarouselView: View {
     
     let productList: [Product]
     @State private var currentIndex = 0
-    
+
     var body: some View {
         VStack(spacing: 6) {
             TabView(selection: $currentIndex) {

@@ -71,4 +71,43 @@ struct Constants {
             year: 2023
         )
     ]
+    
+    static let dealsOfTheDay: [Product] = [
+        Product(
+            id: UUID().uuidString,
+            title: "Galaxy SmartWatch",
+            category: "Wearables",
+            price: 249.99,
+            oldPrice: 299.99,
+            productDescription: "Fitness tracking, notifications, and health monitoring",
+            imageName: "smartwatch",
+            model: "Model: WH-1000XM4, Black",
+            brand: "Samsung",
+            year: 2022
+        ),
+        Product(
+            id: UUID().uuidString,
+            title: "RØDE PodMic",
+            category: "Microphones",
+            price: 108.20,
+            oldPrice: 199.99,
+            productDescription: "Dynamic microphone, Speaker microphone",
+            imageName: "rodemicrophone",
+            model: "Model: WH-1000XM4, Black",
+            brand: "LG",
+            year: 2022
+        ),
+        Product(
+            id: UUID().uuidString,
+            title: "SONY Premium Headphones",
+            category: "Smartphones",
+            price: 699.00,
+            oldPrice: 799.00,
+            productDescription: "High-performance smartphone with advanced camera system",
+            imageName: "headphones",
+            model: "Model: WH-1000XM4, Black",
+            brand: "Sony",
+            year: 2022
+        )
+    ]
 }

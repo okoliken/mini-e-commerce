@@ -11,7 +11,31 @@ import SwiftUI
 struct ProductGrid: View {
     let productList: [Product]
     let columns: [GridItem]
-    @State private var toggleFavorite: Bool = false
+    @EnvironmentObject var dataManager: DataManager
+    @Environment(\.modelContext) var modelContext
+    
+    func saveProductToLocalDB(_ product: Product) {
+        let productId = product.id
+        let item = dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == productId })
+        
+        let productItem = FavoriteProduct(
+            id: product.id,
+            title: product.title,
+            category: product.category,
+            price: product.price,
+            imageName: product.imageName,
+            oldPrice: product.oldPrice,
+            productDescription: product.productDescription,
+            isFavorite: true,
+            model: product.model)
+        
+        if !item {
+            dataManager.add(productItem)
+        } else {
+            dataManager.delete(productItem, in: modelContext)
+        }
+        
+    }
     
     var body: some View {
         ZStack {
@@ -21,7 +45,9 @@ struct ProductGrid: View {
             } else {
                 LazyVGrid(columns: columns, spacing: 18) {
                     ForEach(productList) { product in
-                        ProductCardView(product: product, toggleFavorite: $toggleFavorite)
+                        ProductCardView(product: product) { product in
+                            saveProductToLocalDB(product)
+                        }
                     }
                 }
                 .transition(.opacity.combined(with: .scale(scale: 1.05)))
@@ -58,7 +84,14 @@ struct EmptyStateView: View {
 
 struct ProductCardView: View {
     let product: Product
-    @Binding var toggleFavorite: Bool
+    let onSaveProduct: (Product) -> Void
+    @EnvironmentObject var dataManager: DataManager
+    
+    var itemExistsInDb: Bool {
+        let productId = product.id
+        return dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == productId })
+    }
+    
     var body: some View {
         NavigationLink(value: product) {
             VStack(alignment: .leading, spacing: 12) {
@@ -71,8 +104,15 @@ struct ProductCardView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(maxHeight: 170)
                     }
-                    FavoriteButton(isFavorite: $toggleFavorite)
-                        .padding(12)
+                    FavoriteButton(
+                        product: product,
+                        onFavorite: { product in
+                            onSaveProduct(product)
+                        },
+                        isFavorite: itemExistsInDb
+                    )
+                    .padding(12)
+                    
                 }
                 .frame(maxWidth: .infinity, minHeight: 170)
                 .clipShape(RoundedRectangle(cornerRadius: 24))
@@ -95,7 +135,8 @@ struct ProductCardView: View {
                     }
                     
                     Text(product.title)
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.callout)
+                        .fontWeight(.medium)
                         .foregroundColor(.primary)
                         .frame(height: 14, alignment: .topLeading)
                     
