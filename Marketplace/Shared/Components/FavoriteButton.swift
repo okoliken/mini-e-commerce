@@ -14,12 +14,13 @@ struct FavoriteButton: View {
     let product: Product
     let onFavorite: (Product) -> Void
     
-    let isFavorite: Bool
+   @State var isFavorite: Bool = false
 
     var body: some View {
         Button {
             withAnimation {
-                self.onFavorite(product)
+                onFavorite(product)
+                isFavorite.toggle()
             }
         } label: {
             ZStack {

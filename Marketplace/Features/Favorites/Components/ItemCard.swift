@@ -58,11 +58,12 @@ struct ItemCard: View {
                 
                 Menu {
                     Button("Delete") {
-                        self.onDelete(product)
+                        onDelete(product)
                     }
                 } label: {
                     Image(systemName: "ellipsis")
                         .rotationEffect(.degrees(90))
+                        .frame(width: 20, height: 20)
                 }
             }
         }

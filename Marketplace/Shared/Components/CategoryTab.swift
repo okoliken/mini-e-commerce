@@ -16,7 +16,7 @@ struct CategoryTab: View {
             Button(category) {
                 selected = category.lowercased()
             }
-            .foregroundColor(category.lowercased() == selected ? .black : .gray)
+            .foregroundColor(category.lowercased() == selected.lowercased() ? .black : .gray)
             .font(.callout)
             .fontWeight(.medium)
             

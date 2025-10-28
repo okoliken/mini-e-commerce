@@ -18,21 +18,29 @@ struct ProductGrid: View {
         let productId = product.id
         let item = dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == productId })
         
-        let productItem = FavoriteProduct(
-            id: product.id,
-            title: product.title,
-            category: product.category,
-            price: product.price,
-            imageName: product.imageName,
-            oldPrice: product.oldPrice,
-            productDescription: product.productDescription,
-            isFavorite: true,
-            model: product.model)
         
-        if !item {
-            dataManager.add(productItem)
+        if item {
+            if let itemToDelete = dataManager.fetchSingleItem(
+                FavoriteProduct.self,
+                predicate: #Predicate {$0.id == productId },
+                in: modelContext
+            )
+            {
+                print(itemToDelete)
+                dataManager.delete(itemToDelete, in: modelContext)
+            }
+          
         } else {
-            dataManager.delete(productItem, in: modelContext)
+            dataManager.add(FavoriteProduct(
+                id: product.id,
+                title: product.title,
+                category: product.category,
+                price: product.price,
+                imageName: product.imageName,
+                oldPrice: product.oldPrice,
+                productDescription: product.productDescription,
+                isFavorite: true,
+                model: product.model))
         }
         
     }
@@ -40,7 +48,10 @@ struct ProductGrid: View {
     var body: some View {
         ZStack {
             if productList.isEmpty {
-                EmptyStateView()
+                EmptyStateView(
+                    title: "No Products Available",
+                    description: "New products will appear here once they’re added.",
+                    systemImage: "shippingbox")
                     .transition(.opacity.combined(with: .scale(scale: 0.95)))
             } else {
                 LazyVGrid(columns: columns, spacing: 18) {
@@ -59,25 +70,26 @@ struct ProductGrid: View {
 
 
 struct EmptyStateView: View {
+    let title: String
+    let description: String
+    let systemImage: String
+    
     var body: some View {
         VStack {
             Spacer()
-            
+                
             VStack {
-                Image("remove_14813893")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 120, height: 120)
-                Text("Products not found")
-                    .fontWeight(.medium)
-                    .foregroundColor(.secondary)
-                    .font(.callout)
+                ContentUnavailableView(
+                    title,
+                    systemImage: systemImage,
+                    description: Text("\(description)")
+                )
             }
-            
             
             Spacer()
         }
         .padding(.horizontal, 30)
+        .frame(minHeight: 450, alignment: .center)
     }
 }
 
@@ -86,6 +98,7 @@ struct ProductCardView: View {
     let product: Product
     let onSaveProduct: (Product) -> Void
     @EnvironmentObject var dataManager: DataManager
+    
     
     var itemExistsInDb: Bool {
         let productId = product.id

@@ -20,9 +20,14 @@ class DataManager: ObservableObject {
         self.save()
     }
 
-    func delete(_ object: some PersistentModel, in context: ModelContext ) {
+    func delete(_ object: some PersistentModel, in context: ModelContext) {
         context.delete(object)
-        try! context.save()
+       
+        do {
+            try context.save()
+        } catch {
+            print("\(error.localizedDescription)")
+        }
     }
     
     func itemExists<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>) -> Bool {
@@ -33,6 +38,17 @@ class DataManager: ObservableObject {
         } catch {
             print("\(error.localizedDescription)")
             return false
+        }
+    }
+    
+    func fetchSingleItem<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>, in context: ModelContext) -> T? {
+        do {
+            let descriptor = FetchDescriptor<T>(predicate: predicate)
+            let result = try context.fetch(descriptor)
+            return result.first
+        } catch {
+            print("\(error.localizedDescription)")
+            return nil
         }
     }
 

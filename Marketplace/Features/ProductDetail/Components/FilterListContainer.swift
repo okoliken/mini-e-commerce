@@ -125,7 +125,7 @@ struct PriceFilterSheet: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal)
+                .padding()
                 .padding(.bottom, 12)
             }
         }
