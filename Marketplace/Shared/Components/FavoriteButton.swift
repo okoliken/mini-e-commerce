@@ -28,10 +28,9 @@ struct FavoriteButton: View {
                     .fill(.white)
                     .frame(width: width, height: height)
                 
-                Image(systemName: isFavorite ? "heart.fill" : "heart")
+                Image(systemName: (isFavorite || itemExistsInDb) ? "heart.fill" : "heart")
                     .foregroundColor(.black)
                     .font(.system(size: iconSize))
-                  
             }
         }
         .onChange(of: itemExistsInDb) {

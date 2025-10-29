@@ -98,7 +98,8 @@ struct ProductCardView: View {
     @EnvironmentObject var dataManager: DataManager
     
     var exists: Bool {
-        dataManager.favoriteIDs.contains(product.id)
+        let id = product.id
+        return dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate { $0.id == id })
     }
     
     var body: some View {
