@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct FavouriteView: View {
-    @Query(filter: #Predicate { $0.isFavorite }, sort: [SortDescriptor(\FavoriteProduct.title, order: .reverse)], animation: .easeInOut) var wishListItems: [FavoriteProduct]
+    @Query(filter: #Predicate { $0.isFavorite }, sort: [SortDescriptor(\FavoriteProduct.title, order: .reverse)], animation: .default) var wishListItems: [FavoriteProduct]
     
     @EnvironmentObject var dataManager: DataManager
     @Environment(\.modelContext) var modelContext
