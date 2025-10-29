@@ -10,6 +10,44 @@ import SwiftUI
 struct CarouselCard: View {
     let product: Product
     @State var isFavorite: Bool = false
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var dataManager: DataManager
+    @Environment(\.modelContext) var modelContext
+    
+
+    func saveProductToLocalDB(_ product: Product) {
+        let productId = product.id
+        let isFavorite = dataManager.favoriteIDs.contains(productId)
+
+        if isFavorite {
+            if let itemToDelete = dataManager.fetchSingleItem(
+                FavoriteProduct.self,
+                predicate: #Predicate { $0.id == productId },
+                in: modelContext
+            ) {
+                dataManager.favoriteIDs.remove(productId)
+                dataManager.delete(itemToDelete, in: modelContext)
+            }
+        } else {
+            dataManager.favoriteIDs.insert(productId)
+            dataManager.add(FavoriteProduct(
+                id: product.id,
+                title: product.title,
+                category: product.category,
+                price: product.price,
+                imageName: product.imageName,
+                oldPrice: product.oldPrice,
+                productDescription: product.productDescription,
+                isFavorite: true,
+                model: product.model
+            ))
+        }
+    }
+    
+    var exists: Bool {
+        let id = product.id
+        return dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate { $0.id == id })
+    }
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -65,9 +103,9 @@ struct CarouselCard: View {
             FavoriteButton(
                 product: product,
                 onFavorite: { product in
-                    
+                    saveProductToLocalDB(product)
                 },
-                itemExistsInDb: false
+                itemExistsInDb: exists
             )
             .padding(16)
         }
