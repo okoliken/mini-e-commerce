@@ -16,21 +16,19 @@ struct ProductGrid: View {
     
     func saveProductToLocalDB(_ product: Product) {
         let productId = product.id
-        let item = dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == productId })
-        
-        
-        if item {
+        let isFavorite = dataManager.favoriteIDs.contains(productId)
+
+        if isFavorite {
             if let itemToDelete = dataManager.fetchSingleItem(
                 FavoriteProduct.self,
-                predicate: #Predicate {$0.id == productId },
+                predicate: #Predicate { $0.id == productId },
                 in: modelContext
-            )
-            {
-                print(itemToDelete)
+            ) {
+                dataManager.favoriteIDs.remove(productId)
                 dataManager.delete(itemToDelete, in: modelContext)
             }
-          
         } else {
+            dataManager.favoriteIDs.insert(productId)
             dataManager.add(FavoriteProduct(
                 id: product.id,
                 title: product.title,
@@ -40,9 +38,9 @@ struct ProductGrid: View {
                 oldPrice: product.oldPrice,
                 productDescription: product.productDescription,
                 isFavorite: true,
-                model: product.model))
+                model: product.model
+            ))
         }
-        
     }
     
     var body: some View {
@@ -99,10 +97,8 @@ struct ProductCardView: View {
     let onSaveProduct: (Product) -> Void
     @EnvironmentObject var dataManager: DataManager
     
-    
-    var itemExistsInDb: Bool {
-        let productId = product.id
-        return dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == productId })
+    var exists: Bool {
+        dataManager.favoriteIDs.contains(product.id)
     }
     
     var body: some View {
@@ -116,13 +112,15 @@ struct ProductCardView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxHeight: 170)
+                        
+//                        Text(exists.description)
                     }
                     FavoriteButton(
                         product: product,
                         onFavorite: { product in
                             onSaveProduct(product)
                         },
-                        isFavorite: itemExistsInDb
+                        itemExistsInDb: exists
                     )
                     .padding(12)
                     

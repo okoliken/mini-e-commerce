@@ -15,7 +15,7 @@ struct Product: Decodable, Hashable, Identifiable {
     let oldPrice: Double
     let productDescription: String
     let imageName: String
-    let model: String?
+    var model: String?
     let brand: String?
     let year: Int
 }

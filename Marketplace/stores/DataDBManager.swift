@@ -9,6 +9,7 @@ import SwiftData
 
 @MainActor
 class DataManager: ObservableObject {
+    @Published var favoriteIDs: Set<String> = []
     let modelContext: ModelContext
 
     init(modelContext: ModelContext) {

@@ -39,7 +39,7 @@ struct ProductDetailView: View {
                                         onFavorite: { product in
                                             print(product)
                                         },
-                                        isFavorite: false
+                                        itemExistsInDb: false
                                     )
                                         
                                     AddToCart(width: 40, height: 40, iconSize: 20)

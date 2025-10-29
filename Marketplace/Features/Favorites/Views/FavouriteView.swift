@@ -20,6 +20,7 @@ struct FavouriteView: View {
                 VStack(spacing: 16) {
                     ForEach(wishListItems, id: \.id) { product in
                         ItemCard(product: product) { selectedProduct in
+                            dataManager.favoriteIDs.remove(product.id)
                             dataManager.delete(selectedProduct, in: modelContext)
                         }
                     }

@@ -67,7 +67,7 @@ struct CarouselCard: View {
                 onFavorite: { product in
                     
                 },
-                isFavorite: false
+                itemExistsInDb: false
             )
             .padding(16)
         }
