@@ -11,7 +11,7 @@ import Foundation
 struct Constants {
     static let fakePreviewData: [Product] = [
         .init(
-            id: "1",
+            id: UUID().uuidString,
             title: "MacBook Air M2",
             category: "Laptops",
             price: 1199.99,
@@ -23,7 +23,7 @@ struct Constants {
             year: 2023
         ),
         .init(
-            id: "7",
+            id: UUID().uuidString,
             title: "iPhone 14 Pro",
             category: "Smartphones",
             price: 999.99,
@@ -35,7 +35,7 @@ struct Constants {
             year: 2023
         ),
         .init(
-            id: "14",
+            id: UUID().uuidString,
             title: "Sony WH-1000XM5",
             category: "Headphones",
             price: 399.99,
@@ -47,7 +47,7 @@ struct Constants {
             year: 2023
         ),
         .init(
-            id: "15",
+            id: UUID().uuidString,
             title: "Apple AirPods Pro (2nd Gen)",
             category: "Earphones",
             price: 249.99,
@@ -59,7 +59,7 @@ struct Constants {
             year: 2023
         ),
         .init(
-            id: "20",
+            id: UUID().uuidString,
             title: "Logitech MX Master 3S",
             category: "Accessories",
             price: 99.99,

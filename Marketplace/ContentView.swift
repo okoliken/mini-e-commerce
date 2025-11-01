@@ -54,11 +54,7 @@ struct ContentView: View {
             
             
             NavigationStack {
-                Image("m2air-hero-6c-removebg-preview")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxHeight: 170)
-                    .border(.red)
+              
             }
             .tabItem {
                 Image("cart_icon")

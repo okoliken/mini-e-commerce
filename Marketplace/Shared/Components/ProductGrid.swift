@@ -11,37 +11,9 @@ import SwiftUI
 struct ProductGrid: View {
     let productList: [Product]
     let columns: [GridItem]
-    @EnvironmentObject var dataManager: DataManager
     @Environment(\.modelContext) var modelContext
     
-    func saveProductToLocalDB(_ product: Product) {
-        let productId = product.id
-        let isFavorite = dataManager.favoriteIDs.contains(productId)
-
-        if isFavorite {
-            if let itemToDelete = dataManager.fetchSingleItem(
-                FavoriteProduct.self,
-                predicate: #Predicate { $0.id == productId },
-                in: modelContext
-            ) {
-                dataManager.favoriteIDs.remove(productId)
-                dataManager.delete(itemToDelete, in: modelContext)
-            }
-        } else {
-            dataManager.favoriteIDs.insert(productId)
-            dataManager.add(FavoriteProduct(
-                id: product.id,
-                title: product.title,
-                category: product.category,
-                price: product.price,
-                imageName: product.imageName,
-                oldPrice: product.oldPrice,
-                productDescription: product.productDescription,
-                isFavorite: true,
-                model: product.model
-            ))
-        }
-    }
+    
     
     var body: some View {
         ZStack {
@@ -50,12 +22,13 @@ struct ProductGrid: View {
                     title: "No Products Available",
                     description: "New products will appear here once they’re added.",
                     systemImage: "shippingbox")
-                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
             } else {
                 LazyVGrid(columns: columns, spacing: 18) {
                     ForEach(productList) { product in
                         ProductCardView(product: product) { product in
-                            saveProductToLocalDB(product)
+                            let manager = HandleDBInteractions(product: product, modelContext: modelContext)
+                            manager.saveProductToLocalDB(product)
                         }
                     }
                 }
@@ -75,7 +48,7 @@ struct EmptyStateView: View {
     var body: some View {
         VStack {
             Spacer()
-                
+            
             VStack {
                 ContentUnavailableView(
                     title,
@@ -95,11 +68,12 @@ struct EmptyStateView: View {
 struct ProductCardView: View {
     let product: Product
     let onSaveProduct: (Product) -> Void
-    @EnvironmentObject var dataManager: DataManager
+    @Environment(\.modelContext) var modelContext
     
+
     var exists: Bool {
-        let id = product.id
-        return dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate { $0.id == id })
+        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
+        return manager.exists
     }
     
     var body: some View {
@@ -113,8 +87,6 @@ struct ProductCardView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxHeight: 170)
-                        
-//                        Text(exists.description)
                     }
                     FavoriteButton(
                         product: product,

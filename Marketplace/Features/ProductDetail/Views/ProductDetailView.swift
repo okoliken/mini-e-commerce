@@ -11,42 +11,17 @@ struct ProductDetailView: View {
     @State private var isFavorite: Bool = false
     let product: Product
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var dataManager: DataManager
     @Environment(\.modelContext) var modelContext
     
-
-    func saveProductToLocalDB(_ product: Product) {
-        let productId = product.id
-        let isFavorite = dataManager.favoriteIDs.contains(productId)
-
-        if isFavorite {
-            if let itemToDelete = dataManager.fetchSingleItem(
-                FavoriteProduct.self,
-                predicate: #Predicate { $0.id == productId },
-                in: modelContext
-            ) {
-                dataManager.favoriteIDs.remove(productId)
-                dataManager.delete(itemToDelete, in: modelContext)
-            }
-        } else {
-            dataManager.favoriteIDs.insert(productId)
-            dataManager.add(FavoriteProduct(
-                id: product.id,
-                title: product.title,
-                category: product.category,
-                price: product.price,
-                imageName: product.imageName,
-                oldPrice: product.oldPrice,
-                productDescription: product.productDescription,
-                isFavorite: true,
-                model: product.model
-            ))
-        }
+    
+    var itemExists: Bool {
+        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
+        return manager.exists
     }
     
-    var exists: Bool {
-        let id = product.id
-        return dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate { $0.id == id })
+    func initManager(product: Product) {
+        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
+        manager.saveProductToLocalDB(product)
     }
     
     var body: some View {
@@ -73,9 +48,9 @@ struct ProductDetailView: View {
                                         iconSize: 20,
                                         product: product,
                                         onFavorite: { product in
-                                            saveProductToLocalDB(product)
+                                            self.initManager(product: product)
                                         },
-                                        itemExistsInDb: exists
+                                        itemExistsInDb: itemExists
                                     )
                                         
                                     AddToCart(width: 40, height: 40, iconSize: 20)

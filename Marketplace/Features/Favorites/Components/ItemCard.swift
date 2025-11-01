@@ -6,10 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
-struct ItemCard: View {
-    let product: FavoriteProduct
-    let onDelete: (FavoriteProduct) -> Void
+
+enum PresentationView {
+    case favourite, cart
+}
+
+
+struct ItemCard<Item: ItemDisplayable>: View {
+    let product: Item
+    let onDelete: (Item) -> Void
+    var presentationView: PresentationView = .favourite
     
     var body: some View {
         HStack(spacing: 15) {
@@ -43,30 +51,37 @@ struct ItemCard: View {
             
             Spacer()
             
-            HStack(spacing: 16){
-                ZStack {
-                    Rectangle()
-                        .fill(Color(.card))
-                        .cornerRadius(12)
-                    
-                    Image("cart_icon")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 19, height: 19)
-                }
-                .frame(width: 40, height: 40)
-                
-                Menu {
-                    Button("Delete") {
-                        onDelete(product)
+            if presentationView == .favourite {
+                HStack(spacing: 16){
+                    ZStack {
+                        Rectangle()
+                            .fill(Color(.card))
+                            .cornerRadius(12)
+                        
+                        Button {
+                            
+                        } label: {
+                            Image("cart_icon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 19, height: 19)
+                        }
                     }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .rotationEffect(.degrees(90))
-                        .frame(width: 20, height: 20)
+                    .frame(width: 40, height: 40)
+                    
+                    Menu {
+                        Button("Delete") {
+                            onDelete(product)
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .rotationEffect(.degrees(90))
+                            .frame(width: 20, height: 20)
+                    }
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
+
