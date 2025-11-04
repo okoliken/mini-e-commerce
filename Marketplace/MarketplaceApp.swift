@@ -13,7 +13,7 @@ struct MarketplaceApp: App {
     @StateObject private var productStore = ProductStore()
 
     let sharedModelContainer: ModelContainer = {
-        let schema = Schema([FavoriteProduct.self])
+        let schema = Schema([FavoriteProduct.self, CartProduct.self])
         return try! ModelContainer(for: schema, configurations: [])
     }()
     
@@ -24,7 +24,7 @@ struct MarketplaceApp: App {
                     DataManager(modelContext: sharedModelContainer.mainContext)
                 )
                 .environmentObject(productStore)
-                .modelContainer(for: FavoriteProduct.self)
+                .modelContainer(for: [FavoriteProduct.self, CartProduct.self])
         }
     }
 }

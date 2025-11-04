@@ -7,9 +7,10 @@
 import SwiftUI
 import SwiftData
 
-@MainActor
 class DataManager: ObservableObject {
     @Published var favoriteIDs: Set<String> = []
+    @Published var cartItemsIDs: Set<String> = []
+    
     let modelContext: ModelContext
     
     init(modelContext: ModelContext) {
@@ -62,14 +63,13 @@ class DataManager: ObservableObject {
     }
 }
 
-@MainActor
 class HandleDBInteractions: DataManager {
     let product: Product
     
     init(product: Product, modelContext: ModelContext ) {
         self.product = product
         super.init(modelContext: modelContext)
-        self.loadFavoriteIDs( )
+        self.loadFavoriteIDs()
     }
     
     private func loadFavoriteIDs() {
@@ -83,16 +83,20 @@ class HandleDBInteractions: DataManager {
     }
     
     
-    var exists: Bool {
+    var existsInFavorite: Bool {
         let id = product.id
         return self.favoriteIDs.contains(product.id) || self.itemExists(FavoriteProduct.self, predicate: #Predicate { $0.id == id })
     }
     
-    func saveProductToLocalDB(_ product: Product) {
-        print(product.title)
+    
+    var existsInCart: Bool {
+        let id = product.id
+        return self.cartItemsIDs.contains(product.id) || self.itemExists(CartProduct.self, predicate: #Predicate { $0.id == id })
+    }
+    
+    func saveProductToFavourite(_ product: Product) {
         let productId = product.id
         let isFavorite = self.favoriteIDs.contains(productId)
-        print(isFavorite)
         if isFavorite {
             if let itemToDelete = self.fetchSingleItem(
                 FavoriteProduct.self,
@@ -115,6 +119,48 @@ class HandleDBInteractions: DataManager {
                 isFavorite: true,
                 model: product.model
             ))
+        }
+    }
+    
+    func saveProductToCart(_ product: Product) {
+
+        let productId = product.id
+        let isCart = self.cartItemsIDs.contains(productId)
+        if isCart {
+            if let itemToDelete = self.fetchSingleItem(
+                CartProduct.self,
+                predicate: #Predicate { $0.id == productId },
+                in: self.modelContext
+            ) {
+                self.cartItemsIDs.remove(productId)
+                self.delete(itemToDelete, in: modelContext)
+            }
+        } else {
+          
+            if self.existsInFavorite {
+                print("in here")
+                let productEx = self.fetchSingleItem(FavoriteProduct.self, predicate: #Predicate { $0.id == productId }, in: self.modelContext)
+                
+                if let productFound = productEx {
+                    self.delete(productFound, in: self.modelContext)
+                }
+               
+            }
+            
+            else {
+                self.cartItemsIDs.insert(productId)
+                self.add(CartProduct(
+                    id: product.id,
+                    title: product.title,
+                    category: product.category,
+                    price: product.price,
+                    imageName: product.imageName,
+                    oldPrice: product.oldPrice,
+                    productDescription: product.productDescription,
+                    isCart: true,
+                    model: product.model
+                ))
+            }
         }
     }
 }

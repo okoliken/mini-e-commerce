@@ -65,6 +65,7 @@ struct BrowseListView: View {
             .padding(.horizontal, 20)
             .scrollTargetBehavior(.paging)
         }
+        .scrollContentBackground(.visible)
     }
 }
 

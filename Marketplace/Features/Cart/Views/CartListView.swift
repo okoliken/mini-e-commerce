@@ -10,7 +10,7 @@ import SwiftData
 
 struct CartListView: View {
     @Query(filter: #Predicate { $0.isCart }, sort: [SortDescriptor(\CartProduct.title, order: .reverse)], animation: .default) var cartItems: [CartProduct]
-    @EnvironmentObject var dataManager: DataManager
+
     @Environment(\.modelContext) var modelContext
     
     var body: some View {

@@ -14,14 +14,32 @@ struct ProductDetailView: View {
     @Environment(\.modelContext) var modelContext
     
     
-    var itemExists: Bool {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        return manager.exists
+    enum ProductCategory {
+        case cartItem, FavouriteItem
     }
     
-    func initManager(product: Product) {
+    var itemExists: Bool {
         let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        manager.saveProductToLocalDB(product)
+        return manager.existsInFavorite
+    }
+    
+    var itemsExsistsInCart: Bool {
+        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
+        return manager.existsInCart
+    }
+    
+    func initManager(product: Product, category: ProductCategory = .FavouriteItem) {
+        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
+        switch category {
+            case .FavouriteItem:
+                manager.saveProductToFavourite(product)
+                break
+            case .cartItem:
+                print("met condition")
+                manager.saveProductToCart(product)
+                break
+        }
+        
     }
     
     var body: some View {
@@ -51,9 +69,12 @@ struct ProductDetailView: View {
                                             self.initManager(product: product)
                                         },
                                         itemExistsInDb: itemExists
-                                    )
                                         
-                                    AddToCart(width: 40, height: 40, iconSize: 20)
+                                    )
+                                    
+                                    AddToCart(width: 40, height: 40, iconSize: 20, product: product, onAddToCart: { product in
+                                        self.initManager(product: product, category: .cartItem)
+                                    }, itemExistsInDb: itemsExsistsInCart)
                                 }
                                 .padding(16)
                             }

@@ -15,12 +15,12 @@ struct CarouselCard: View {
     
     var itemExists: Bool {
         let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        return manager.exists
+        return manager.existsInFavorite
     }
     
     func initManager(product: Product) {
         let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        manager.saveProductToLocalDB(product)
+        manager.saveProductToFavourite(product)
     }
     
     var body: some View {

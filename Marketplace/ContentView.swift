@@ -12,8 +12,8 @@ import SwiftData
 struct ContentView: View {
     let service = ProductStore()
     @EnvironmentObject var store: ProductStore
-    @Query(sort: [SortDescriptor(\FavoriteProduct.title, order: .reverse)],animation: .easeInOut) var wishListItems: [FavoriteProduct]
-    
+    @Query(sort: [SortDescriptor(\FavoriteProduct.title)]) var wishListItems: [FavoriteProduct]
+    @Query(sort: [SortDescriptor(\CartProduct.title)])  var cartItems: [CartProduct]
     var body: some View {
         TabView{
             NavigationStack {
@@ -54,12 +54,14 @@ struct ContentView: View {
             
             
             NavigationStack {
-              
+                CartListView()
+                    .navigationTitle("Cart")
+                    .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem {
                 Image("cart_icon")
                 Text("Cart")
-            }
+            } .badge(cartItems.count)
             
             
             NavigationStack {
