@@ -10,7 +10,7 @@ import SwiftData
 
 @main
 struct MarketplaceApp: App {
-    @StateObject private var productStore = ProductStore()
+    @State private var productStore = ProductStore()
 
     let sharedModelContainer: ModelContainer = {
         let schema = Schema([FavoriteProduct.self, CartProduct.self])
@@ -20,11 +20,14 @@ struct MarketplaceApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(
+                .environment(
                     DataManager(modelContext: sharedModelContainer.mainContext)
                 )
-                .environmentObject(productStore)
-                .modelContainer(for: [FavoriteProduct.self, CartProduct.self])
+                .environment(
+                    HandleDBInteractions(modelContext: sharedModelContainer.mainContext)
+                )
+                .environment(productStore)
+                .modelContainer(sharedModelContainer)
         }
     }
 }

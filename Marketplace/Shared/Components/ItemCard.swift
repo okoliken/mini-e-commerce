@@ -16,9 +16,9 @@ enum PresentationView {
 
 struct ItemCard<Item: ItemDisplayable>: View {
     let product: Item
-    let onDelete: (Item) -> Void
     var presentationView: PresentationView = .favourite
-    
+    let onDelete: (Item) -> Void
+
     var body: some View {
         HStack(spacing: 15) {
             
@@ -42,6 +42,7 @@ struct ItemCard<Item: ItemDisplayable>: View {
                     .font(.callout)
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
+                    .lineLimit(1)
                 
                 Text("\(product.model ?? "")")
                     .font(.caption)
@@ -78,6 +79,13 @@ struct ItemCard<Item: ItemDisplayable>: View {
                             .rotationEffect(.degrees(90))
                             .frame(width: 20, height: 20)
                     }
+                }
+            }
+            
+            else {
+                CartIncrementButton(cartItem: product) { cartItem in
+                    print(cartItem.title)
+                    onDelete(cartItem)
                 }
             }
         }

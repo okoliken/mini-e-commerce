@@ -10,7 +10,7 @@ import SwiftUI
 
 
 struct HomeView: View {
-    @EnvironmentObject var store: ProductStore
+    @Environment(ProductStore.self) var store: ProductStore
     @State private var selected: String = "all"
     
 
@@ -57,6 +57,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .environmentObject(ProductStore())
-        .modelContainer(for: FavoriteProduct.self)
+       
 }

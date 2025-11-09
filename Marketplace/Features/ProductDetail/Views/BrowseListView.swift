@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BrowseListView: View {
     @State var showingFilters = false
-    @StateObject var viewModel: BrowseListViewModel
+    @State var viewModel: BrowseListViewModel
     @Environment(\.dismiss) private var dismiss
     
     let category: Category
@@ -18,7 +18,7 @@ struct BrowseListView: View {
     init(category: Category, products: [Product]) {
         self.category = category
         self.products = products
-        _viewModel = StateObject(wrappedValue: BrowseListViewModel(products: products))
+        _viewModel = State(wrappedValue: BrowseListViewModel(products: products))
     }
     
     var body: some View {

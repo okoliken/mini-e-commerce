@@ -12,15 +12,20 @@ struct CarouselCard: View {
     @State var isFavorite: Bool = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) var modelContext
+    @Environment(HandleDBInteractions.self) var dbInteractions
+    @Environment(DataManager.self) var dataManager: DataManager
     
-    var itemExists: Bool {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        return manager.existsInFavorite
+    
+    var isexr: Bool {
+        let id = product.id
+        let exits = dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == id})
+        return exits
     }
+
     
     func initManager(product: Product) {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        manager.saveProductToFavourite(product)
+        
+        dbInteractions.saveProductToFavourite(product)
     }
     
     var body: some View {
@@ -79,7 +84,7 @@ struct CarouselCard: View {
                 onFavorite: { product in
                     self.initManager(product: product)
                 },
-                itemExistsInDb: itemExists
+                itemExistsInDb: isexr
             )
             .padding(16)
         }

@@ -11,7 +11,7 @@ import SwiftData
 struct FavouriteView: View {
     @Query(filter: #Predicate { $0.isFavorite }, sort: [SortDescriptor(\FavoriteProduct.title, order: .reverse)], animation: .default) var wishListItems: [FavoriteProduct]
     
-    @EnvironmentObject var dataManager: DataManager
+    @Environment(DataManager.self) var dataManager: DataManager
     @Environment(\.modelContext) var modelContext
     
     var body: some View {

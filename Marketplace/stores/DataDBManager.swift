@@ -7,9 +7,10 @@
 import SwiftUI
 import SwiftData
 
-class DataManager: ObservableObject {
-    @Published var favoriteIDs: Set<String> = []
-    @Published var cartItemsIDs: Set<String> = []
+@Observable
+class DataManager {
+    var favoriteIDs: Set<String> = []
+    var cartItemsIDs: Set<String> = []
     
     let modelContext: ModelContext
     
@@ -63,14 +64,8 @@ class DataManager: ObservableObject {
     }
 }
 
+@Observable
 class HandleDBInteractions: DataManager {
-    let product: Product
-    
-    init(product: Product, modelContext: ModelContext ) {
-        self.product = product
-        super.init(modelContext: modelContext)
-        self.loadFavoriteIDs()
-    }
     
     private func loadFavoriteIDs() {
         do {
@@ -82,17 +77,6 @@ class HandleDBInteractions: DataManager {
         }
     }
     
-    
-    var existsInFavorite: Bool {
-        let id = product.id
-        return self.favoriteIDs.contains(product.id) || self.itemExists(FavoriteProduct.self, predicate: #Predicate { $0.id == id })
-    }
-    
-    
-    var existsInCart: Bool {
-        let id = product.id
-        return self.cartItemsIDs.contains(product.id) || self.itemExists(CartProduct.self, predicate: #Predicate { $0.id == id })
-    }
     
     func saveProductToFavourite(_ product: Product) {
         let productId = product.id
@@ -123,7 +107,7 @@ class HandleDBInteractions: DataManager {
     }
     
     func saveProductToCart(_ product: Product) {
-
+        
         let productId = product.id
         let isCart = self.cartItemsIDs.contains(productId)
         if isCart {
@@ -136,31 +120,20 @@ class HandleDBInteractions: DataManager {
                 self.delete(itemToDelete, in: modelContext)
             }
         } else {
-          
-            if self.existsInFavorite {
-                print("in here")
-                let productEx = self.fetchSingleItem(FavoriteProduct.self, predicate: #Predicate { $0.id == productId }, in: self.modelContext)
-                
-                if let productFound = productEx {
-                    self.delete(productFound, in: self.modelContext)
-                }
-               
-            }
             
-            else {
-                self.cartItemsIDs.insert(productId)
-                self.add(CartProduct(
-                    id: product.id,
-                    title: product.title,
-                    category: product.category,
-                    price: product.price,
-                    imageName: product.imageName,
-                    oldPrice: product.oldPrice,
-                    productDescription: product.productDescription,
-                    isCart: true,
-                    model: product.model
-                ))
-            }
+            self.cartItemsIDs.insert(productId)
+            print(self.cartItemsIDs, productId)
+            self.add(CartProduct(
+                id: product.id,
+                title: product.title,
+                category: product.category,
+                price: product.price,
+                imageName: product.imageName,
+                oldPrice: product.oldPrice,
+                productDescription: product.productDescription,
+                isCart: true,
+                model: product.model
+            ))
         }
     }
 }

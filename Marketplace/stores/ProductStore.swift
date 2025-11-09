@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-@MainActor
-class ProductStore: ObservableObject {
-    @Published var products: [Product] = []
+@Observable
+class ProductStore {
+    var products: [Product] = []
 
     init() {
         loadProducts()

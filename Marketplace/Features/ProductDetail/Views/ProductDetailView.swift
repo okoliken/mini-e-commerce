@@ -12,31 +12,35 @@ struct ProductDetailView: View {
     let product: Product
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) var modelContext
-    
+    @Environment(HandleDBInteractions.self) var dbInteractions
+    @Environment(DataManager.self) var dataManager: DataManager
     
     enum ProductCategory {
         case cartItem, FavouriteItem
     }
     
     var itemExists: Bool {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        return manager.existsInFavorite
+        let id = product.id
+        let exits = dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == id})
+        return exits
     }
     
     var itemsExsistsInCart: Bool {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        return manager.existsInCart
+        let id = product.id
+        let exits = dataManager.cartItemsIDs.contains(product.id) || dataManager.itemExists(CartProduct.self, predicate: #Predicate {$0.id == id})
+        return exits
     }
     
+   
+    
     func initManager(product: Product, category: ProductCategory = .FavouriteItem) {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
         switch category {
             case .FavouriteItem:
-                manager.saveProductToFavourite(product)
+                dbInteractions.saveProductToFavourite(product)
                 break
             case .cartItem:
                 print("met condition")
-                manager.saveProductToCart(product)
+                dbInteractions.saveProductToCart(product)
                 break
         }
         
@@ -51,6 +55,7 @@ struct ProductDetailView: View {
                         VStack {
                             ZStack(alignment: .bottomTrailing) {
                                 ZStack(alignment: .center) {
+                                  
                                     Rectangle()
                                         .fill(Color(.card))
                                     
@@ -58,6 +63,7 @@ struct ProductDetailView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(height: 315)
+                                    
                                 }
                                 VStack(spacing: 8){
                                     FavoriteButton(
@@ -69,7 +75,6 @@ struct ProductDetailView: View {
                                             self.initManager(product: product)
                                         },
                                         itemExistsInDb: itemExists
-                                        
                                     )
                                     
                                     AddToCart(width: 40, height: 40, iconSize: 20, product: product, onAddToCart: { product in

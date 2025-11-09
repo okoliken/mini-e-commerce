@@ -31,34 +31,34 @@ let priceRanges: [PriceRange] = [
     .init(label: "$1500 - $1999", min: 1500, max: 1999)
 ]
 
-@MainActor
-public class BrowseListViewModel: ObservableObject {
-    @Published var selectedFilterTags: [String] = []
-    @Published var products: [Product] = []
+@Observable
+public class BrowseListViewModel {
+    var selectedFilterTags: [String] = []
+    var products: [Product] = []
     
-    @Published var selectedBrand: String? = nil {
+    var selectedBrand: String? = nil {
         didSet {
             self.updateFilterTags()
         }
     }
-    @Published var selectedPrice: String? {
+    var selectedPrice: String? {
         didSet {
             self.updateFilterTags()
         }
     }
-    @Published var selectedYear: String? {
+    var selectedYear: String? {
         didSet {
             self.updateFilterTags()
         }
     }
 
-    @Published var selectedModel: String? {
+    var selectedModel: String? {
         didSet {
             self.updateFilterTags()
         }
     }
     
-    @Published var selectedSortOption: SortOption = .relevance
+    var selectedSortOption: SortOption = .relevance
     
     init(products: [Product]) {
         self.products = products

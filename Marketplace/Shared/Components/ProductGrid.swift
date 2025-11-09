@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-
+import SwiftData
 
 struct ProductGrid: View {
     let productList: [Product]
     let columns: [GridItem]
     @Environment(\.modelContext) var modelContext
-    
+    @Environment(HandleDBInteractions.self) var dbInteractions
     
     var body: some View {
         ZStack {
@@ -25,10 +25,9 @@ struct ProductGrid: View {
             } else {
                 LazyVGrid(columns: columns, spacing: 18) {
                     ForEach(productList) { product in
-                        ProductCardView(product: product) { product in
-                            let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-                            manager.saveProductToFavourite(product)
-                        }
+                        ProductCardView(product: product, onSaveProduct: { product in
+                            dbInteractions.saveProductToFavourite(product)
+                        })
                     }
                 }
                 .transition(.opacity.combined(with: .scale(scale: 1.05)))
@@ -42,12 +41,12 @@ struct ProductGrid: View {
 
 struct ProductCardHeader : View {
     let product: Product
-    let existsInCart: Bool
     let existsInFavorite: Bool
     
     let onSaveProduct: (Product) -> Void
     var body: some View {
         ZStack(alignment: .topTrailing) {
+           
             ZStack(alignment: .center) {
                 Rectangle()
                     .fill(Color(.card))
@@ -56,35 +55,14 @@ struct ProductCardHeader : View {
                     .aspectRatio(contentMode: .fit)
                     .frame(maxHeight: 170)
             }
-            HStack {
-                if existsInCart {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.primary)
-                            .frame(width: 60, height: 24)
-                            .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 2)
-                        
-                        Text("IN CART")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundColor(.white)
-                            .tracking(0.5)
-                    }
-                    .padding(.leading, 12)
-                    
-                    
-                    Spacer()
-                }
-                
-                
-                FavoriteButton(
-                    product: product,
-                    onFavorite: { product in
-                        onSaveProduct(product)
-                    },
-                    itemExistsInDb: existsInFavorite
-                )
-                .padding(12)
-            }
+            FavoriteButton(
+                product: product,
+                onFavorite: { product in
+                    onSaveProduct(product)
+                },
+                itemExistsInDb: existsInFavorite
+            )
+            .padding(12)
             
         }
         .frame(maxWidth: .infinity, minHeight: 170)
@@ -133,25 +111,25 @@ struct ProductCardDetails: View {
 struct ProductCardView: View {
     let product: Product
     let onSaveProduct: (Product) -> Void
-    @Environment(\.modelContext) var modelContext
+
+    @Environment(DataManager.self) var dataManager: DataManager
     
-    
-    var existsInFavorite: Bool {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        return manager.existsInFavorite
-    }
-    
-    var existsInCart: Bool {
-        let manager = HandleDBInteractions(product: product, modelContext: modelContext)
-        return manager.existsInCart
+    var isFavorite: Bool {
+        let id = product.id
+        let exits = dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == id})
+        return exits
     }
     
     var body: some View {
         NavigationLink(value: product) {
             VStack(alignment: .leading, spacing: 12) {
-                ProductCardHeader(product: product, existsInCart: existsInCart, existsInFavorite: existsInFavorite, onSaveProduct: { product in
-                    onSaveProduct(product)
-                })
+                ProductCardHeader(
+                    product: product,
+                    existsInFavorite: isFavorite,
+                    onSaveProduct: { product in
+                        onSaveProduct(product)
+                    }
+                )
                 ProductCardDetails(product: product)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -10,7 +10,7 @@ import SwiftUI
 struct BrowseView: View {
     @State private var searchQuery: String = ""
     @FocusState private var isFocused: Bool
-    @EnvironmentObject var store: ProductStore
+    @Environment(ProductStore.self) var store: ProductStore
     
     var categories: [Category] {
         let categories = Set(store.products.map { product in
