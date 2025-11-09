@@ -64,14 +64,7 @@ struct ContentView: View {
                 Text("Cart")
             } .badge(cartItems.count)
             
-            
-            NavigationStack {
-                Text("Profile")
-            }
-            .tabItem {
-                Image("profile_icon")
-                Text("Profile")
-            }
+        
         }
         .tint(.black)
     }
