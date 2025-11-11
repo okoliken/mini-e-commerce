@@ -8,11 +8,11 @@
 import SwiftUI
 
 
-struct CartIncrementButton<I: ItemDisplayable>: View {
-    let cartItem: I
-    let onDelete: (I) -> Void
-    
-    var count: Int = 2
+struct CartIncrementButton<Item: ItemDisplayable>: View {
+    let cartItem: Item
+    let onDelete: (Item) -> Void
+    @Environment(\.modelContext) var modelContext
+    var count: Int = 1
     
     var body: some View {
         VStack(alignment: .trailing, spacing: 24) {
@@ -43,12 +43,17 @@ struct CartIncrementButton<I: ItemDisplayable>: View {
                 .buttonStyle(.plain)
                 
                 // Quantity text
-                Text("\(count)")
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.primary)
+                if let quantity = cartItem.quantity {
+                    Text("\(quantity.description)")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.primary)
+                }
+              
                 
                 // Plus button
-                Button(action: {}) {
+                Button(action: {
+//                    modelContext
+                }) {
                     Image(systemName: "plus")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundStyle(.white)

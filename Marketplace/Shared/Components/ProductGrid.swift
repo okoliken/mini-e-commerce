@@ -11,7 +11,6 @@ import SwiftData
 struct ProductGrid: View {
     let productList: [Product]
     let columns: [GridItem]
-    @Environment(\.modelContext) var modelContext
     @Environment(HandleDBInteractions.self) var dbInteractions
     
     var body: some View {
@@ -39,14 +38,13 @@ struct ProductGrid: View {
 
 
 
-struct ProductCardHeader : View {
+struct ProductCardHeader: View {
     let product: Product
-    let existsInFavorite: Bool
-    
+    let dbManager: HandleDBInteractions
     let onSaveProduct: (Product) -> Void
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
-           
             ZStack(alignment: .center) {
                 Rectangle()
                     .fill(Color(.card))
@@ -55,14 +53,36 @@ struct ProductCardHeader : View {
                     .aspectRatio(contentMode: .fit)
                     .frame(maxHeight: 170)
             }
-            FavoriteButton(
-                product: product,
-                onFavorite: { product in
-                    onSaveProduct(product)
-                },
-                itemExistsInDb: existsInFavorite
-            )
-            .padding(12)
+            
+            HStack {
+                if dbManager.isInCart(product.id) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.primary)
+                            .frame(width: 60, height: 24)
+                            .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 2)
+                        
+                        Text("IN CART")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(.white)
+                            .tracking(0.5)
+                    }
+                    .padding(.leading, 12)
+                    
+                    
+                    Spacer()
+                }
+                
+                FavoriteButton(
+                    product: product,
+                    onFavorite: { product in
+                        onSaveProduct(product)
+                    },
+                    dbManager: dbManager
+                )
+                .padding(12)
+            }
+            
             
         }
         .frame(maxWidth: .infinity, minHeight: 170)
@@ -70,10 +90,13 @@ struct ProductCardHeader : View {
     }
 }
 
+
 struct ProductCardDetails: View {
     let product: Product
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            
             HStack(alignment: .center, spacing: 6) {
                 if product.oldPrice > product.price {
                     Text("$\(product.price, specifier: "%.2f")")
@@ -111,27 +134,22 @@ struct ProductCardDetails: View {
 struct ProductCardView: View {
     let product: Product
     let onSaveProduct: (Product) -> Void
-
-    @Environment(DataManager.self) var dataManager: DataManager
+    @Environment(HandleDBInteractions.self) var dbInteractions
     
-    var isFavorite: Bool {
-        let id = product.id
-        let exits = dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == id})
-        return exits
-    }
     
     var body: some View {
         NavigationLink(value: product) {
             VStack(alignment: .leading, spacing: 12) {
                 ProductCardHeader(
                     product: product,
-                    existsInFavorite: isFavorite,
+                    dbManager: dbInteractions,
                     onSaveProduct: { product in
                         onSaveProduct(product)
                     }
                 )
                 ProductCardDetails(product: product)
             }
+            
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .transition(.scale(scale: 0.95).combined(with: .opacity))

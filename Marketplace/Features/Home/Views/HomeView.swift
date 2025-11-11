@@ -10,10 +10,10 @@ import SwiftUI
 
 
 struct HomeView: View {
-    @Environment(ProductStore.self) var store: ProductStore
     @State private var selected: String = "all"
+    @Environment(ProductStore.self) var store: ProductStore
+    @Environment(HandleDBInteractions.self) var dbInteractions
     
-
     var categoriesList: [String] {
         if store.products.isEmpty {
             return []
@@ -51,6 +51,9 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(.horizontal, 20)
             .scrollTargetBehavior(.paging)
+        }
+        .onAppear {
+            dbInteractions.loadFavoriteIDs()
         }
     }
 }

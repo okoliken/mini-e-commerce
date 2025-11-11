@@ -9,9 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct CartListView: View {
-    @Query(filter: #Predicate { $0.isCart }, sort: [SortDescriptor(\CartProduct.title, order: .forward)]) var cartItems: [CartProduct]
+    @Query(
+        filter: #Predicate {
+            $0.isCart
+        },
+        sort: [SortDescriptor(
+            \CartProduct.title,
+             order: .forward
+        )]) var cartItems: [CartProduct]
     
-    @Environment(DataManager.self) var dataManager: DataManager
+    @Environment(HandleDBInteractions.self) var dbInteractions
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
@@ -20,10 +27,10 @@ struct CartListView: View {
                 ScrollView(.vertical, showsIndicators: false){
                     VStack(spacing: 16) {
                         ForEach(cartItems, id: \.id) { product in
-                            ItemCard(product: product, presentationView: .cart) { selectedProduct in
-                                dataManager.cartItemsIDs.remove(selectedProduct.id)
-                                dataManager.delete(selectedProduct, in: modelContext)
-                            }
+                            ItemCard(product: product, presentationView: .cart, onRemoveItem: { selectedProduct in
+                                dbInteractions.cartItemsIDs.remove(selectedProduct.id)
+                                dbInteractions.delete(selectedProduct, in: modelContext)
+                            })
                         }
                     }
                     .padding(.top, 32)

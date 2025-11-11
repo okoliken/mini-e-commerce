@@ -23,6 +23,14 @@ class DataManager {
         self.save()
     }
     
+    func isFavorited(_ productId: String) -> Bool {
+        return favoriteIDs.contains(productId)
+    }
+    
+    func isInCart(_ productId: String) -> Bool {
+        return cartItemsIDs.contains(productId)
+    }
+    
     func delete(_ object: some PersistentModel, in context: ModelContext) {
         context.delete(object)
         
@@ -64,10 +72,13 @@ class DataManager {
     }
 }
 
+
+// INHERITS MOST FUNCTIONALITY FROM BASE DataManager
+// ENCAPSULATES
 @Observable
 class HandleDBInteractions: DataManager {
     
-    private func loadFavoriteIDs() {
+    func loadFavoriteIDs() {
         do {
             let descriptor = FetchDescriptor<FavoriteProduct>(predicate: #Predicate { $0.isFavorite })
             let favorites = try modelContext.fetch(descriptor)
@@ -77,10 +88,27 @@ class HandleDBInteractions: DataManager {
         }
     }
     
+    func loadCartIDs() {
+        do {
+            let descriptor = FetchDescriptor<CartProduct>(predicate: #Predicate { $0.isCart })
+            let cartItems = try modelContext.fetch(descriptor)
+            self.cartItemsIDs = Set(cartItems.map { $0.id })
+        } catch {
+            print("Error loading cart IDs: \(error.localizedDescription)")
+        }
+    }
+    
     
     func saveProductToFavourite(_ product: Product) {
         let productId = product.id
-        let isFavorite = self.favoriteIDs.contains(productId)
+        let isFavorite = self.favoriteIDs.contains(
+            productId
+        ) || self.itemExists(
+            FavoriteProduct.self,
+            predicate: #Predicate {
+                $0.id == productId
+            })
+        
         if isFavorite {
             if let itemToDelete = self.fetchSingleItem(
                 FavoriteProduct.self,
@@ -109,7 +137,13 @@ class HandleDBInteractions: DataManager {
     func saveProductToCart(_ product: Product) {
         
         let productId = product.id
-        let isCart = self.cartItemsIDs.contains(productId)
+        let isCart = self.cartItemsIDs.contains(
+            productId
+        ) || self.itemExists(
+            CartProduct.self,
+            predicate: #Predicate {
+                $0.id == productId
+            })
         if isCart {
             if let itemToDelete = self.fetchSingleItem(
                 CartProduct.self,
@@ -122,7 +156,6 @@ class HandleDBInteractions: DataManager {
         } else {
             
             self.cartItemsIDs.insert(productId)
-            print(self.cartItemsIDs, productId)
             self.add(CartProduct(
                 id: product.id,
                 title: product.title,

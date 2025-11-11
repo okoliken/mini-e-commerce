@@ -8,20 +8,17 @@
 import SwiftUI
 
 struct AddToCart: View {
-    @State var isAddedToCart: Bool = false
     var width: CGFloat = 30
     var height: CGFloat = 30
     var iconSize: CGFloat = 16
     var product: Product
     let onAddToCart: (Product) -> Void
-    let itemExistsInDb: Bool
-
+    let dbManager: HandleDBInteractions  
     
     var body: some View {
         Button {
             withAnimation {
                 onAddToCart(product)
-                isAddedToCart.toggle()
             }
         } label: {
             ZStack {
@@ -29,15 +26,9 @@ struct AddToCart: View {
                     .fill(.white)
                     .frame(width: width, height: height)
                 
-                Image(systemName: (isAddedToCart || itemExistsInDb) ? "cart.fill" : "cart")
-                    .foregroundColor(.black)
+                Image(systemName: dbManager.isInCart(product.id) ? "cart.fill" : "cart")
                     .font(.system(size: iconSize))
             }
         }
-        .onChange(of: itemExistsInDb) {
-            isAddedToCart = itemExistsInDb
-        }
     }
 }
-
-

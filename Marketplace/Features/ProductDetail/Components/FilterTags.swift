@@ -9,7 +9,7 @@ import SwiftUI
 struct FilterTags: View {
     let selectedFilterTags: [String]
     let clearFilter: (String) -> Void
-    let clearAll: () -> Void  // Added this closure for "Clear All" action
+    let clearAll: () -> Void
     
     var name = ""
     
@@ -36,7 +36,7 @@ struct FilterTags: View {
                     .transition(.opacity.combined(with: .scale))
                 }
                 
-                // 🧼 Clear Filters badge
+
                 if !selectedFilterTags.isEmpty {
                     Button {
                         withAnimation {

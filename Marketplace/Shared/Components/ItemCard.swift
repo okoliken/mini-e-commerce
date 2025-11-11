@@ -16,9 +16,27 @@ enum PresentationView {
 
 struct ItemCard<Item: ItemDisplayable>: View {
     let product: Item
-    var presentationView: PresentationView = .favourite
-    let onDelete: (Item) -> Void
+    let dbManager: HandleDBInteractions?
+    let presentationView: PresentationView
+    let onRemoveItem: ((Item) -> Void)?
+    let onAddToCart: ((Item) -> Void)?
 
+
+    
+    init(
+        product: Item,
+        presentationView: PresentationView,
+        dbManager: HandleDBInteractions? = nil,
+        onRemoveItem: ((Item) -> Void)? = nil,
+        onAddToCart: ((Item) -> Void)? = nil
+    ) {
+        self.product = product
+        self.presentationView = presentationView
+        self.dbManager = dbManager
+        self.onRemoveItem = onRemoveItem
+        self.onAddToCart = onAddToCart
+    }
+    
     var body: some View {
         HStack(spacing: 15) {
             
@@ -60,19 +78,26 @@ struct ItemCard<Item: ItemDisplayable>: View {
                             .cornerRadius(12)
                         
                         Button {
-                            
+                            if let onAddToCart = onAddToCart {
+                                onAddToCart(product)
+                            }
                         } label: {
-                            Image("cart_icon")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 19, height: 19)
+                            if let dbManager = dbManager {
+                                Image(systemName: dbManager.isInCart(product.id) ? "cart.fill" : "cart")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 19, height: 19)
+                            }
+                           
                         }
                     }
                     .frame(width: 40, height: 40)
                     
                     Menu {
                         Button("Delete") {
-                            onDelete(product)
+                            if let onRemoveItem = onRemoveItem {
+                                onRemoveItem(product)
+                            }
                         }
                     } label: {
                         Image(systemName: "ellipsis")
@@ -85,7 +110,9 @@ struct ItemCard<Item: ItemDisplayable>: View {
             else {
                 CartIncrementButton(cartItem: product) { cartItem in
                     print(cartItem.title)
-                    onDelete(cartItem)
+                    if let onRemoveItem = onRemoveItem {
+                        onRemoveItem(cartItem)
+                    }
                 }
             }
         }

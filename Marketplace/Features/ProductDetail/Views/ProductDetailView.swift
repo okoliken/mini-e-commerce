@@ -11,27 +11,14 @@ struct ProductDetailView: View {
     @State private var isFavorite: Bool = false
     let product: Product
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) var modelContext
     @Environment(HandleDBInteractions.self) var dbInteractions
-    @Environment(DataManager.self) var dataManager: DataManager
+    
     
     enum ProductCategory {
         case cartItem, FavouriteItem
     }
     
-    var itemExists: Bool {
-        let id = product.id
-        let exits = dataManager.favoriteIDs.contains(product.id) || dataManager.itemExists(FavoriteProduct.self, predicate: #Predicate {$0.id == id})
-        return exits
-    }
     
-    var itemsExsistsInCart: Bool {
-        let id = product.id
-        let exits = dataManager.cartItemsIDs.contains(product.id) || dataManager.itemExists(CartProduct.self, predicate: #Predicate {$0.id == id})
-        return exits
-    }
-    
-   
     
     func initManager(product: Product, category: ProductCategory = .FavouriteItem) {
         switch category {
@@ -55,7 +42,7 @@ struct ProductDetailView: View {
                         VStack {
                             ZStack(alignment: .bottomTrailing) {
                                 ZStack(alignment: .center) {
-                                  
+                                    
                                     Rectangle()
                                         .fill(Color(.card))
                                     
@@ -74,12 +61,18 @@ struct ProductDetailView: View {
                                         onFavorite: { product in
                                             self.initManager(product: product)
                                         },
-                                        itemExistsInDb: itemExists
+                                        dbManager: dbInteractions
                                     )
                                     
-                                    AddToCart(width: 40, height: 40, iconSize: 20, product: product, onAddToCart: { product in
-                                        self.initManager(product: product, category: .cartItem)
-                                    }, itemExistsInDb: itemsExsistsInCart)
+                                    AddToCart(
+                                        width: 40,
+                                        height: 40,
+                                        iconSize: 20,
+                                        product: product,
+                                        onAddToCart: { product in
+                                            self.initManager(product: product, category: .cartItem)
+                                        },
+                                        dbManager: dbInteractions)
                                 }
                                 .padding(16)
                             }

@@ -13,6 +13,7 @@ protocol ItemDisplayable {
     var price: Double { get }
     var imageName: String { get }
     var model: String? { get }
+    var quantity: Int? { get }
 }
 
 
@@ -27,6 +28,7 @@ class FavoriteProduct: ItemDisplayable {
     var productDescription: String
     var isFavorite: Bool
     var model: String?
+    var quantity: Int?
     
     init(id: String,
          title: String,
@@ -37,7 +39,7 @@ class FavoriteProduct: ItemDisplayable {
          productDescription: String,
          isFavorite: Bool,
          model: String?
-        ) {
+    ) {
         self.id = id
         self.title = title
         self.category = category
@@ -48,6 +50,7 @@ class FavoriteProduct: ItemDisplayable {
         self.isFavorite = isFavorite
         self.model = model
     }
+    
 }
 
 @Model
@@ -61,7 +64,7 @@ class CartProduct: ItemDisplayable {
     var productDescription: String
     var isCart: Bool
     var model: String?
-    var quantity: Int = 1
+    var quantity: Int? = 1
     
     init(
         id: String,

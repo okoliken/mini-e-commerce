@@ -8,19 +8,17 @@
 import SwiftUI
 
 struct FavoriteButton: View {
-    @State var isFavorite: Bool = false
     var width: CGFloat = 30
     var height: CGFloat = 30
     var iconSize: CGFloat = 16
     var product: Product
     let onFavorite: (Product) -> Void
-    let itemExistsInDb: Bool
-
+    let dbManager: HandleDBInteractions
+    
     var body: some View {
         Button {
             withAnimation {
                 onFavorite(product)
-                isFavorite.toggle()
             }
         } label: {
             ZStack {
@@ -28,13 +26,9 @@ struct FavoriteButton: View {
                     .fill(.white)
                     .frame(width: width, height: height)
                 
-                Image(systemName: (isFavorite || itemExistsInDb) ? "heart.fill" : "heart")
-                    .foregroundColor(.black)
+                Image(systemName: dbManager.isFavorited(product.id) ? "heart.fill" : "heart")
                     .font(.system(size: iconSize))
             }
-        }
-        .onChange(of: itemExistsInDb) {
-            isFavorite = itemExistsInDb
         }
     }
 }

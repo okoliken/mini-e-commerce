@@ -10,13 +10,13 @@ import SwiftUI
 struct FilterListContainer: View {
     let brands: [String]
     let models: [String]
+    @State private var showingSheet = false
     
     @Binding var showingFilters: Bool
     @Binding var selectedBrand: String?
     @Binding var selectedPrice: String?
     @Binding var selectedModel: String?
     @Binding var selectedYear: String?
-    @State private var showingSheet = false
     
     
     
@@ -24,19 +24,44 @@ struct FilterListContainer: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 FilterButton(showingSheet: $showingSheet, selectedPrice: $selectedPrice)
-                MenuSelector(label: "Brand", options: brands, selectedOption: selectedBrand) { brand in
+                MenuSelector(
+                    label: "Brand",
+                    options: brands,
+                    selectedOption: selectedBrand
+                ) { brand in
                     selectedBrand = brand
                 }
-                MenuSelector(label: "Year", options: ["2019", "2020", "2021", "2022", "2023"], selectedOption: selectedYear) { year in
+                
+                MenuSelector(
+                    label: "Year",
+                    options: [
+                        "2019",
+                        "2020",
+                        "2021",
+                        "2022",
+                        "2023"
+                    ],
+                    selectedOption: selectedYear
+                ) { year in
                     selectedYear = year
                 }
-                MenuSelector(label: "Model", options: models, selectedOption: selectedModel) { model in
+                
+                MenuSelector(
+                    label: "Model",
+                    options: models,
+                    selectedOption: selectedModel
+                ) { model in
                     selectedModel = model
                 }
-                MenuSelector(label: "Offers", options: [], selectedOption: "") { model in
+                
+                MenuSelector(
+                    label: "Offers",
+                    options: [],
+                    selectedOption: ""
+                ) { model in
                     selectedModel = model
                 }
-
+                
             }
         }
         .padding(.top, 15)
