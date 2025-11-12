@@ -39,7 +39,7 @@ struct HomeView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.primary)
                     
-                    ProductGrid(productList: Array(store.products.prefix(10)),
+                    ProductGrid(productList: Array(store.products.shuffled().prefix(10)),
                      columns: [
                         GridItem(.flexible(), spacing: 12),
                         GridItem(.flexible(), spacing: 12)
@@ -54,6 +54,7 @@ struct HomeView: View {
         }
         .onAppear {
             dbInteractions.loadFavoriteIDs()
+            dbInteractions.loadCartIDs()
         }
     }
 }

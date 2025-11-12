@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct CartIncrementButton<Item: ItemDisplayable>: View {
-    let cartItem: Item
+    var cartItem: Item
     let onDelete: (Item) -> Void
     @Environment(\.modelContext) var modelContext
     var count: Int = 1
@@ -32,7 +32,11 @@ struct CartIncrementButton<Item: ItemDisplayable>: View {
             HStack(spacing: 14) {
                 
                 // Minus button
-                Button(action: {}) {
+                Button(action: {
+                    if let cartProduct = cartItem as? CartProduct {
+                        cartProduct.quantity = max(1, (cartProduct.quantity ?? 1) - 1)
+                    }
+                }) {
                     Image(systemName: "minus")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundStyle(.black)
@@ -52,7 +56,9 @@ struct CartIncrementButton<Item: ItemDisplayable>: View {
                 
                 // Plus button
                 Button(action: {
-//                    modelContext
+                    if let cartProduct = cartItem as? CartProduct {
+                        cartProduct.quantity = (cartProduct.quantity ?? 1) + 1
+                    }
                 }) {
                     Image(systemName: "plus")
                         .font(.system(size: 16, weight: .medium))

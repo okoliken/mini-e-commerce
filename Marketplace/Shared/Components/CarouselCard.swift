@@ -15,7 +15,6 @@ struct CarouselCard: View {
     
     
     func initManager(product: Product) {
-        
         dbInteractions.saveProductToFavourite(product)
     }
     

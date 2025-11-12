@@ -26,7 +26,6 @@ struct ProductDetailView: View {
                 dbInteractions.saveProductToFavourite(product)
                 break
             case .cartItem:
-                print("met condition")
                 dbInteractions.saveProductToCart(product)
                 break
         }

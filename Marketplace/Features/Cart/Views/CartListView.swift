@@ -39,7 +39,7 @@ struct CartListView: View {
                 .padding(0)
     
                 if !cartItems.isEmpty {
-                    CheckoutSection()
+                    CheckoutSection(cartItems: cartItems)
                 }
                
             }
@@ -54,6 +54,21 @@ struct CartListView: View {
 }
 
 struct CheckoutSection: View {
+    var cartItems: [CartProduct]
+    @State var isCheckoutOpen: Bool = false
+    let shipping: Int = 10
+    
+    func calculateTotal(initial: Double, product: CartProduct) -> Double {
+        initial + (product.price * Double(product.quantity ?? 1))
+    }
+    
+    var total: Double {
+        return cartItems.reduce(0) { (initial, product) in
+            calculateTotal(initial: initial, product: product)
+        } + Double(shipping)
+    }
+    
+
     var body: some View {
         Divider()
         VStack(alignment: .trailing) {
@@ -64,7 +79,7 @@ struct CheckoutSection: View {
                         .font(.caption)
                         .fontWeight(.medium)
                     Spacer()
-                    Text("$0.00")
+                    Text("$\(shipping)")
                         .font(.caption)
                 }
 
@@ -78,12 +93,14 @@ struct CheckoutSection: View {
                         .foregroundStyle(.black.opacity(0.4))
                     
                     Spacer()
-                    Text("$695.07")
+                    Text("$\(total, specifier: "%.2f")")
                         .font(.caption)
                         .fontWeight(.bold)
                 }
                 
-                Button(action: {}) {
+                Button(action: {
+                    isCheckoutOpen = true
+                }) {
                    Text("Checkout")
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -92,8 +109,12 @@ struct CheckoutSection: View {
                         .font(.callout)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .foregroundStyle(.white)
+                       
                 }
-               
+                .sheet(isPresented: $isCheckoutOpen, content: {
+                    CheckoutContent(cartItems: cartItems, shipping: shipping, total: total, isCheckoutOpen: $isCheckoutOpen)
+                })
+
                 
             }
             .padding(.top, 8)

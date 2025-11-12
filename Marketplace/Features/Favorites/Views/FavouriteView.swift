@@ -36,9 +36,20 @@ struct FavouriteView: View {
         )
         
         if !dbInteractions.isInCart(productItem.id) {
+            dbInteractions.cartItemsIDs.insert(productItem.id)
             dbInteractions.add(productItem)
         } else {
-            dbInteractions.delete(productItem, in: modelContext)
+           let productId = productItem.id
+            
+            if let itemToDelete = dbInteractions.fetchSingleItem(
+                CartProduct.self,
+                predicate: #Predicate { $0.id == productId },
+                in: self.modelContext
+            ) {
+                dbInteractions.cartItemsIDs.remove(productId)
+                dbInteractions.delete(itemToDelete, in: modelContext)
+            }
+           
         }
     }
     

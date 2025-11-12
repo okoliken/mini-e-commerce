@@ -21,7 +21,6 @@ struct ItemCard<Item: ItemDisplayable>: View {
     let onRemoveItem: ((Item) -> Void)?
     let onAddToCart: ((Item) -> Void)?
 
-
     
     init(
         product: Item,
@@ -55,7 +54,7 @@ struct ItemCard<Item: ItemDisplayable>: View {
                 Text("$\(product.price, specifier: "%.2f")")
                     .font(.callout)
                     .fontWeight(.heavy)
-                
+                            
                 Text("\(product.title)")
                     .font(.callout)
                     .fontWeight(.medium)
@@ -109,7 +108,6 @@ struct ItemCard<Item: ItemDisplayable>: View {
             
             else {
                 CartIncrementButton(cartItem: product) { cartItem in
-                    print(cartItem.title)
                     if let onRemoveItem = onRemoveItem {
                         onRemoveItem(cartItem)
                     }

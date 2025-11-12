@@ -11,9 +11,10 @@ protocol ItemDisplayable {
     var id: String { get }
     var title: String { get }
     var price: Double { get }
+    var oldPrice: Double { get }
     var imageName: String { get }
     var model: String? { get }
-    var quantity: Int? { get }
+    var quantity: Int? { get set }
 }
 
 

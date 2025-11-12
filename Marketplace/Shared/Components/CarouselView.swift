@@ -18,6 +18,7 @@ struct CarouselView: View {
                 ForEach(productList.indices, id: \.self) { index in
                     CarouselCard(product: productList[index])
                         .tag(index)
+                        .padding(.trailing, 10)
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
